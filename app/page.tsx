@@ -1,5 +1,5 @@
 "use client";
-// minor changes with the comments 
+// minor changes with the comments : move the devDepend -> dependencies
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import HeroSection from "@/components/landing/HeroSection";
