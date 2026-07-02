@@ -1,5 +1,5 @@
 "use client";
-
+// minor changes with the comments 
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import HeroSection from "@/components/landing/HeroSection";
