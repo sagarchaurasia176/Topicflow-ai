@@ -2,8 +2,7 @@
 import Link from "next/link";
 import { useGlobalContextApiState } from "@/app/context/GlobalStateManager";
 import { Button } from "@/components/ui/button";
-import SignOutForm from "@/components/sign-out.form";
-import { LogOut, User } from "lucide-react";
+// import { LogOut, User } from "lucide-react";
 
 export default function Navbar() {
   const { User: user, loading } = useGlobalContextApiState();
@@ -46,12 +45,12 @@ export default function Navbar() {
                   Dashboard
                 </Link>
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg">
-                  <User className="w-4 h-4 text-gray-600" />
+                  {/* <User className="w-4 h-4 text-gray-600" /> */}
                   <span className="text-sm text-gray-700 font-medium">
                     {user.name || user.email}
                   </span>
                 </div>
-                <SignOutForm>
+                {/* <SignOutForm>
                   <Button
                     variant="outline"
                     size="sm"
@@ -61,7 +60,7 @@ export default function Navbar() {
                     <LogOut className="w-4 h-4" />
                     Sign Out
                   </Button>
-                </SignOutForm>
+                </SignOutForm> */}
               </div>
             ) : (
               // User is not logged in

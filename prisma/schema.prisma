@@ -1,6 +1,5 @@
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -8,63 +7,60 @@ datasource db {
   provider = "postgresql"
 }
 
-// google auth
+// Google and Email Auth
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
   name          String?
-  emailVerified Boolean
+  emailVerified DateTime?
   image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
+  password      String? // For email/password logic
+  provider      String? // e.g. "google" or "credentials"
+  isLoggedIn    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
 }
 
-//session 
+// NextAuth Session
 model Session {
-  id          String   @id
-  expiresAt   DateTime
-  token       String   @unique
-  deviceToken String?  @unique // Unique token to prevent multiple simultaneous logins
-  createdAt   DateTime
-  updatedAt   DateTime
-  ipAddress   String?
-  userAgent   String?
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(uuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
 }
 
-//account
+// NextAuth Account
 model Account {
-  id                  String    @id
-  accountId           String
-  providerId          String
-  userId              String
-  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken         String?
-  refreshToken        String?
-  idToken             String?
-  accessTokenExpiresAt DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope               String?
-  password            String?
-  createdAt           DateTime
-  updatedAt           DateTime
+  id                String  @id @default(uuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
   @@map("account")
 }
 
-//verification
-model Verification {
-  id         String    @id
+// NextAuth Verification
+model VerificationToken {
   identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
+  token      String   @unique
+  expires    DateTime
 
-  @@map("verification")
+  @@unique([identifier, token])
+  @@map("verification_token")
 }

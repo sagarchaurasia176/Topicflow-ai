@@ -7,15 +7,17 @@ import {
   useEffect,
 } from "react";
 import { User } from "@/lib/userType";
-import { authClient } from "@/lib/auth/auth-client";
+import { useSession, signOut } from "next-auth/react";
+
 interface GlobalState {
   User: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  refreshUser: () => Promise<void>;
 }
+
 const userContext = createContext<GlobalState | undefined>(undefined);
+
 interface userContextProviderProps {
   User: User | null;
   children: ReactNode;
@@ -27,40 +29,39 @@ export const ContextProvider = ({
   children,
 }: Partial<userContextProviderProps>) => {
   const [User, setUser] = useState<User | null>(initialUser || null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { data: session, status } = useSession();
+  const [loading, setLoading] = useState<boolean>(status === "loading");
 
-  const refreshUser = async () => {
-    try {
-      setLoading(true);
-      const session = await authClient.getSession();
-
-      if (session?.data?.user) {
-        const user = session.data.user as User;
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
-      console.error("Error refreshing user session:", error);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Refresh user session on mount and when auth state changes
+  // Handle Token Refresh Failure globally
   useEffect(() => {
-    if (!initialUser) {
-      refreshUser();
+    if (session?.error === "RefreshAccessTokenError") {
+      signOut({ callbackUrl: "/sign-in" });
     }
-  }, []);
+  }, [session]);
+
+  // Sync session state to global user state
+  useEffect(() => {
+    setLoading(status === "loading");
+    if (status === "authenticated" && session?.user) {
+      setUser({
+        id: session.user.id || "",
+        name: session.user.name || "",
+        email: session.user.email || "",
+        image: session.user.image || null,
+        provider: session.user.provider || null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    } else if (status === "unauthenticated") {
+      setUser(null);
+    }
+  }, [session, status]);
 
   const values: GlobalState = {
     User,
     setUser,
     loading,
     setLoading,
-    refreshUser,
   };
 
   return <userContext.Provider value={values}>{children}</userContext.Provider>;

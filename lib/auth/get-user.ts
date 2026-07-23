@@ -1,28 +1,20 @@
-import { headers } from "next/headers";
-import { auth } from "./auth";
-import {User} from '../userType'
+import { auth } from "@/auth/auth";
+import { User } from "../userType";
 
 export async function getUser(): Promise<User | null> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers()
-    });
-    
-    if (session?.user) {
-      const user = {
-        id: session.user.id,
-        email: session.user.email,
-        name: session.user.name || "",
-        emailVerified: session.user.emailVerified,
-        image: session.user.image || null,
-        createdAt: session.user.createdAt,
-        updatedAt: session.user.updatedAt,
-      };
-      return user;
-    }
-    return null;
-  } catch (error) {
-    console.error("Error fetching user session:", error);
+  const session = await auth();
+
+  if (!session?.user) {
     return null;
   }
-} 
+
+  // Map session user to custom User type
+  return {
+    id: session.user.id || "",
+    name: session.user.name || "",
+    email: session.user.email || "",
+    image: session.user.image || null,
+    createdAt: new Date(), // NextAuth sessions don't persist original timestamps by default, fallback to now
+    updatedAt: new Date(),
+  };
+}

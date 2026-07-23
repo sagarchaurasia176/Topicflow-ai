@@ -1,7 +1,7 @@
 'use client';
 import { Button } from "@radix-ui/themes";
 import { Avatar } from "@radix-ui/themes";
-import { authClient } from "@/lib/auth/auth-client";
+import { useSession, signOut } from "next-auth/react";
 
 interface RadixDropdownMenuCheckboxDemoProps {
   side?: "top" | "bottom" | "left" | "right";
@@ -16,17 +16,10 @@ export function RadixDropdownMenuCheckboxDemo({
   align = "end",
   alignOffset = 0,
 }: RadixDropdownMenuCheckboxDemoProps) {
-  // Better Auth
-  const { data: session } = authClient.useSession();
+  const { data: session } = useSession();
 
   const handleSignOut = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          window.location.href = "/";
-        },
-      },
-    });
+    await signOut({ callbackUrl: "/" });
   };
 
   // Get user data from session

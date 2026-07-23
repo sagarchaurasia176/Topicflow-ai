@@ -12,7 +12,7 @@ import {
 import { Home, Map, User, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useGlobalContextApiState } from "@/app/context/GlobalStateManager";
-import SignOutForm from "@/components/sign-out.form";
+import { signOut } from "next-auth/react";
 
 export function AppSidebar() {
   const { User: user } = useGlobalContextApiState();
@@ -109,18 +109,17 @@ export function AppSidebar() {
             </SidebarMenuItem>
           )}
 
-          {/* Sign Out Button */}
           <SidebarMenuItem>
-            <SignOutForm>
-              <SidebarMenuButton
-                tooltip="Sign Out"
-                className="text-red-600 hover:bg-red-50 hover:text-red-700 font-medium rounded-lg transition-colors w-full"
-                type="submit"
-              >
-                <LogOut className="h-5 w-5" />
-                <span>Sign Out</span>
-              </SidebarMenuButton>
-            </SignOutForm>
+            <SidebarMenuButton
+              tooltip="Sign Out"
+              className="text-red-600 hover:bg-red-50 hover:text-red-700 font-medium rounded-lg transition-colors w-full"
+              onClick={async () => {
+                await signOut({ callbackUrl: "/" });
+              }}
+            >
+              <LogOut className="h-5 w-5" />
+              <span>Sign Out</span>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

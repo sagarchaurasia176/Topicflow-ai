@@ -5,4 +5,5 @@ export interface User {
    createdAt: Date;
    updatedAt: Date;
    image?: string | null | undefined;
+   provider?: string | null | undefined;
 }

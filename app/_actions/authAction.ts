@@ -1,14 +1,11 @@
-import { authClient } from "@/lib/auth/auth-client";
+import { signIn } from "@/auth/auth";
 
 // Handle - google SignIn | action
 export const handleGoogleSignIn = async () => {
   try {
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/Dashboard",
-    });
+    await signIn("google", { redirectTo: "/Dashboard" });
   } catch (error) {
     console.error("Google sign-in error:", error);
     throw error;
   }
-};
+};
