@@ -16,7 +16,6 @@ import { signOut } from "next-auth/react";
 
 export function AppSidebar() {
   const { User: user } = useGlobalContextApiState();
-
   return (
     <Sidebar collapsible="icon" className="bg-white border-r border-gray-200">
       <SidebarHeader className="p-6 border-b border-gray-200">
@@ -67,47 +66,12 @@ export function AppSidebar() {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-
-            {/* add feature more here */}
-            {/* <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                tooltip="Settings"
-                className="text-gray-700 hover:bg-gray-100 hover:text-gray-900 font-medium rounded-lg transition-colors"
-              >
-                <Link href="/Dashboard">
-                  <Settings className="h-5 w-5" />
-                  <span>Settings</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem> */}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="p-4 border-t border-gray-200">
         <SidebarMenu>
-          {/* User Info */}
-          {user && (
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                tooltip={user.email}
-                className="text-gray-700 hover:bg-gray-100 font-medium rounded-lg transition-colors cursor-default"
-              >
-                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-indigo-600" />
-                </div>
-                <div className="flex flex-col items-start overflow-hidden">
-                  <span className="text-sm font-semibold truncate w-full">
-                    {user.name || "User"}
-                  </span>
-                  <span className="text-xs text-gray-500 truncate w-full">
-                    {user.email}
-                  </span>
-                </div>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          )}
 
           <SidebarMenuItem>
             <SidebarMenuButton
